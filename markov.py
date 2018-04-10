@@ -52,10 +52,11 @@ def make_chains(text_string):
             lst_chains.append(word[i+2])    #lst_chains holds word[3]
             chains[key] = lst_chains        #instantiate k,v pair
         else:                                   
-            update_list = chains[key]       #store value of keys
-            update_list.append(word[i+2])   #update value
-            chains[key] = update_list       #update k,v pair
+            chains[key].append(word[i+2])    
 
+            # update_list = chains[key]       #store value of keys
+            # update_list.append(word[i+2])   #update value
+            # chains[key] = update_list       #update k,v pair
         
     print chains    
     
@@ -65,9 +66,14 @@ def make_chains(text_string):
 def make_text(chains):
     """Return text from chains."""
 
-    words = []
+    words = [] 
+    new_key = choice(chains.keys())
 
-    # your code goes here
+    while new_key in chains:
+        random_word = choice(chains[new_key])
+        new_key = (new_key[1], random_word)
+        words.extend([new_key[0], new_key[1]])
+        print words
 
     return " ".join(words)
 
