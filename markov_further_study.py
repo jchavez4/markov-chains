@@ -19,7 +19,7 @@ def open_and_read_file(file_path):
     return full_text
 
 
-def make_chains(text_string):
+def make_chains(text_string, n):
     """Take input text as string; return dictionary of Markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -48,23 +48,25 @@ def make_chains(text_string):
     
     #entire one line, txt string
     word = text_string.split()
-
     #loop through length of word, stop at 2nd from last
-    for i in range(len(word) - 2):     
-        key = (word[i], word[i+1])
+    for i in range(len(word) - n):
+        key = []
+        for j in range(n):
+            key.append(word[j+i])
         #if tuple of 2 words not in dict keys
         #instantiate empty list
         #lst_chains holds every 3rd word
-        #instantiate k(2 words),v pair          
+        #instantiate k(2 words),v pair 
+        key = tuple(key)         
         if key not in chains.keys():        
             lst_chains = []                 
-            lst_chains.append(word[i+2])    
+            lst_chains.append(word[i+n])    
             chains[key] = lst_chains        
         else:
             # update_list = chains[key]       #store value of keys
             # update_list.append(word[i+2])   #update value
             # chains[key] = update_list       #update k,v pair                                   
-            chains[key].append(word[i+2])    
+            chains[key].append(word[i+n])    
     return chains
 
 
@@ -74,24 +76,28 @@ def make_text(chains):
     words = [] 
     #randomizes tuple from chains
     new_key = choice(chains.keys())
-    words.extend([new_key[0], new_key[1]])
+    words.extend(list(new_key))
     #until there is no tuple 
     while new_key in chains:
         #random_word pulls from v corresponding to randomly selected k
         random_word = choice(chains[new_key])
-        new_key = (new_key[1], random_word)
+        new_key = (new_key[-1], random_word)
         words.append(random_word)
 
     return " ".join(words)
 
 
-input_path = argv[1]
+# input_path = argv[1]
+# n = argv[2]
+
+script, input_path, n = argv
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
-chains = make_chains(input_text)
+chains = make_chains(input_text, int(n))
+print chains
 
 # Produce random text
 random_text = make_text(chains)
